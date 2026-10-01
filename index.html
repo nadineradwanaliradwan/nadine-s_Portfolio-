@@ -549,13 +549,19 @@
     <div class="timeline">
       <div class="tl-item">
         <div class="tl-head"><h4>Egyptian Natural Gas Company (GASCO)</h4><span class="tl-when">Aug 2026</span></div>
-        <p class="tl-role">IT Department Intern (1 month)</p>
+        <p class="tl-role">IT Department Intern (3–26 Aug 2026, 144 training hrs)</p>
         <p class="desc">Hands-on exposure to REST API integration and ERP systems within a live IT department at a national energy company, supporting enterprise-system workflows and API-driven integration between business systems. Also completed a Job Ready training course during this internship.</p>
         <button class="tl-cert-link" data-cert-id="gasco-jobready">View certificate →</button>
       </div>
       <div class="tl-item">
+        <div class="tl-head"><h4>Information Technology Institute (ITI) — Web Development using .NET</h4><span class="tl-when">Jul – Aug 2026</span></div>
+        <p class="tl-role">144-hour training (15 Jul – 24 Aug 2026)</p>
+        <p class="desc">SQL Server fundamentals, C#, Entity Framework, and ASP.NET MVC, plus Generative AI / AI agents &amp; workflow automation and freelancing fundamentals.</p>
+        <button class="tl-cert-link" data-cert-id="iti-dotnet">View certificate →</button>
+      </div>
+      <div class="tl-item">
         <div class="tl-head"><h4>ECG — Desktop Application Development Training</h4><span class="tl-when">Aug 2026</span></div>
-        <p class="tl-role">C# · Entity Framework · WPF · SQL (85 hrs, 1 month)</p>
+        <p class="tl-role">C# · Entity Framework · WPF · SQL (85 hrs) · scored 95%</p>
         <p class="desc">Completed an intensive hands-on training building a complete desktop application (Store Management System) end-to-end, from relational data modeling through a working CRUD-based UI.</p>
         <button class="tl-cert-link" data-cert-id="ecg-training">View certificate →</button>
       </div>
@@ -571,7 +577,6 @@
         <p class="desc">Developed 18 Power BI dashboards across 3 reporting levels with automated reporting, and wrote ETL/data-cleaning scripts in Python (pandas) — type coercion, null handling, and feature engineering.</p>
         <div class="card-links">
           <a class="tl-cert-link" href="https://github.com/nadineradwanaliradwan/Codveda-Data-Analytics-Internship" target="_blank" rel="noopener">View on GitHub →</a>
-          <button class="tl-cert-link" data-cert-id="codveda-bi">View certificate →</button>
         </div>
       </div>
     </div>
@@ -621,7 +626,7 @@
       <div class="skill-cat">
         <div class="k">Cloud &amp; Tools</div>
         <div class="tag-row">
-          <span class="tag">HCIA Cloud Computing</span><span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">Jira</span><span class="tag">VS Code</span><span class="tag">Jupyter</span><span class="tag">Postman</span><span class="tag">Figma</span><span class="tag">Unity</span>
+          <span class="tag">Cloud Computing (NTI / Huawei)</span><span class="tag">Git</span><span class="tag">GitHub</span><span class="tag">Jira</span><span class="tag">VS Code</span><span class="tag">Jupyter</span><span class="tag">Postman</span><span class="tag">Figma</span><span class="tag">Unity</span>
         </div>
       </div>
     </div>
@@ -705,35 +710,39 @@
   const certData = [
     {
       id: "hcia",
-      name: "HCIA Cloud Computing",
+      name: "Cloud Computing (70 hrs)",
       issuer: "NTI / Huawei Egyptian Talent Academy — scored 90%",
-      date: "Feb 2025",
+      date: "26 Jan – 9 Feb 2025",
       status: "issued",
+      image: "certs/hcia-certificate.png",
       brief: "Covered core cloud computing concepts, virtualization, and Huawei Cloud service fundamentals, assessed through a final exam scored at 90%."
     },
     {
-      id: "iti-aspnet",
-      name: "ASP.NET MVC Framework",
-      issuer: "ITI",
-      date: "Pending",
-      status: "pending",
-      brief: "Hands-on training in the ASP.NET MVC framework — building web applications in C#/.NET using the Model-View-Controller pattern."
+      id: "iti-dotnet",
+      name: "Web Development using .NET (144 hrs)",
+      issuer: "Information Technology Institute (ITI)",
+      date: "15 Jul – 24 Aug 2026",
+      status: "issued",
+      image: "certs/iti-certificate.jpeg",
+      brief: "SQL Server fundamentals (24 hrs), C# (42), Entity Framework (18), ASP.NET MVC (36), Generative AI / AI agents & workflow automation (12), and freelancing fundamentals (12)."
     },
     {
       id: "gasco-jobready",
-      name: "Job Ready Program",
-      issuer: "GASCO",
-      date: "Aug 2026",
-      status: "pending",
-      brief: "A workplace-readiness course taken alongside the GASCO internship, covering professional communication, teamwork, and general job-readiness skills."
+      name: "Summer Training (144 hrs)",
+      issuer: "GASCO — Egyptian Natural Gas Company",
+      date: "3 – 26 Aug 2026",
+      status: "issued",
+      verifyUrl: "https://certs.businessai.me/verify?id=12351l1x1a4y4w",
+      brief: "IT department training with hands-on exposure to REST API integration and ERP systems, issued and verifiable online by GASCO (certificate ID 12351l1x1a4y4w)."
     },
     {
       id: "ecg-training",
-      name: "Desktop Application Development Training",
-      issuer: "ECG",
-      date: "Aug 2026",
-      status: "pending",
-      brief: "85 hours of hands-on training building a complete desktop application in C#, Entity Framework, and WPF — from relational data modeling through a working CRUD-based UI. Capstone project: the Store Management System."
+      name: "Internship Completion Letter — Engineering Development Department",
+      issuer: "ECG (Engineering Consultants Group)",
+      date: "2 – 13 Aug 2026 — scored 95%",
+      status: "issued",
+      image: "certs/ecg-letter.jpeg",
+      brief: "Desktop application development in C#, Entity Framework, and WPF, from relational data modeling through a working CRUD-based UI. Capstone project: the Store Management System."
     },
     {
       id: "cib-genai",
@@ -743,14 +752,6 @@
       status: "issued",
       image: "certs/cib-certificate.png",
       brief: "Attended a session on the principles, approaches, and best practices of generative AI as part of CIB's Summer internship program."
-    },
-    {
-      id: "codveda-bi",
-      name: "Business Intelligence & Data Analytics Internship",
-      issuer: "Codveda",
-      date: "Jan 2026",
-      status: "pending",
-      brief: "Built 18 Power BI dashboards across 3 reporting levels with automated reporting, and wrote ETL/data-cleaning scripts in Python (pandas) — type coercion, null handling, and feature engineering."
     },
     {
       id: "br41nio",
@@ -780,12 +781,24 @@
     if(cert.image){
       frame.className = 'cert-frame issued has-image';
       frame.innerHTML = `<img src="${cert.image}" alt="${cert.name} certificate" class="cert-image">`;
+    } else if(cert.verifyUrl){
+      frame.className = 'cert-frame issued';
+      frame.innerHTML = `<div class="icon">✅</div><div class="msg">Verified by the issuer</div><div class="sub">Use the link below to check this certificate on the issuer's site.</div>`;
     } else if(cert.status === 'issued'){
       frame.className = 'cert-frame issued';
       frame.innerHTML = `<div class="icon">📄</div><div class="msg">Certificate on file</div><div class="sub">Add the certificate scan or image here to display it on this page.</div>`;
     } else {
       frame.className = 'cert-frame';
       frame.innerHTML = `<div class="icon">⏳</div><div class="msg">Certificate is still being issued</div><div class="sub">This certificate will appear here once it has been received.</div>`;
+    }
+
+    const oldV = document.getElementById('certVerify'); if(oldV) oldV.remove();
+    if(cert.verifyUrl){
+      const a = document.createElement('a');
+      a.id = 'certVerify'; a.href = cert.verifyUrl; a.target = '_blank'; a.rel = 'noopener';
+      a.textContent = 'Verify this certificate →';
+      a.style.cssText = 'display:inline-block;margin-top:16px;color:var(--accent);font-weight:600';
+      frame.insertAdjacentElement('afterend', a);
     }
 
     document.getElementById('certBrief').textContent = cert.brief || "Details for this certificate haven't been added yet.";
