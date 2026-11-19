@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, BookOpen, Building2, Layers, Lock, ScanLine, X } from 'lucide-react';
-import { profile, projects } from '../data';
+import { moreProjects, profile, projects } from '../data';
 import SectionTitle from './SectionTitle';
 import { ease, inView } from './motion';
 
@@ -179,6 +179,57 @@ function Modal({ p, onClose }) {
   );
 }
 
+/* Full index of everything else, editorial list style */
+function MoreWork({ onOpen }) {
+  let n = projects.length;
+  return (
+    <div id="all-work" className="mt-28 scroll-mt-24">
+      <div className="flex items-end justify-between gap-6">
+        <SectionTitle size={24}>All work</SectionTitle>
+        <a href={profile.github} target="_blank" rel="noreferrer" className="group flex items-center gap-1.5 text-[13px] text-muted transition-colors hover:text-white">
+          GitHub <ArrowUpRight size={13} />
+        </a>
+      </div>
+      {moreProjects.map((g) => (
+        <div key={g.area} className="mt-10">
+          <p className="border-b border-line pb-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{g.area}</p>
+          <ul>
+            {g.items.map((p) => {
+              n += 1;
+              const idx = String(n).padStart(2, '0');
+              return (
+                <motion.li
+                  key={p.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={inView}
+                  transition={{ duration: 0.5, ease }}
+                  className="border-b border-line"
+                >
+                  <button
+                    type="button"
+                    onClick={() => onOpen(p)}
+                    className="group grid w-full grid-cols-[32px_1fr_20px] items-baseline gap-4 px-2 py-4 text-left transition-colors duration-200 hover:bg-white md:grid-cols-[40px_minmax(0,1.1fr)_minmax(0,1.6fr)_minmax(0,0.9fr)_20px]"
+                  >
+                    <span className="font-mono text-[11px] text-muted group-hover:text-[#111111]">{idx}</span>
+                    <span>
+                      <span className="block text-[15px] font-semibold tracking-head text-white group-hover:text-[#111111]">{p.title}</span>
+                      <span className="mt-1 block font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-[#111111]/60 md:hidden">{p.category}</span>
+                    </span>
+                    <span className="hidden text-[13px] leading-snug text-muted group-hover:text-[#111111]/70 md:block">{p.summary}</span>
+                    <span className="hidden font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-[#111111]/70 md:block">{p.stack.slice(0, 3).join(' · ')}</span>
+                    <ArrowUpRight size={15} className="self-center text-muted transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#111111]" />
+                  </button>
+                </motion.li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Projects() {
   const [open, setOpen] = useState(null);
   return (
@@ -190,7 +241,7 @@ export default function Projects() {
             Independent projects and engineering work. Open a folder to explore a project or case study.
           </motion.p>
         </div>
-        <a href={profile.github} target="_blank" rel="noreferrer" className="group flex shrink-0 items-center gap-1.5 text-[13px] text-white">
+        <a href="#all-work" className="group flex shrink-0 items-center gap-1.5 text-[13px] text-white">
           All work <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
         </a>
       </div>
@@ -198,6 +249,8 @@ export default function Projects() {
       <div className="mt-14 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {projects.map((p, i) => <Folder key={p.id} p={p} i={i} onOpen={setOpen} />)}
       </div>
+
+      <MoreWork onOpen={setOpen} />
 
       <AnimatePresence>{open && <Modal p={open} onClose={() => setOpen(null)} />}</AnimatePresence>
     </section>

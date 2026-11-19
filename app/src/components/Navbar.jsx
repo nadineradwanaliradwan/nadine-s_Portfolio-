@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { nav, profile } from '../data';
 import { ease } from './motion';
 
@@ -7,6 +7,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const panel = useRef(null);
   const toggle = useRef(null);
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  useMotionValueEvent(scrollY, 'change', (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setHidden((h) => (y > 120 && y > prev + 2 ? true : y < prev - 2 || y <= 120 ? false : h));
+  });
+  const show = !hidden || open;
 
   useEffect(() => {
     if (!open) return;
@@ -24,8 +31,8 @@ export default function Navbar() {
       {/* difference blend keeps the bar legible over both #111 and the white footer banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease, delay: 0.2 }}
+        animate={{ opacity: show ? 1 : 0, y: show ? 0 : -70 }}
+        transition={{ duration: 0.35, ease }}
         className="mx-auto flex max-w-[1240px] items-center justify-between px-5 py-5 mix-blend-difference sm:px-8"
       >
         <a href="#top" className="text-[14px] font-medium text-white">{profile.short}</a>

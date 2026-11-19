@@ -125,29 +125,166 @@ export const projects = [
   },
 ];
 
+// Reverse-chronological (most recent first), ordered by end date.
+// `cert` is a file in public/certs; `link` is any other proof.
 export const experience = [
   {
-    date: 'Aug 2026',
-    role: 'IT Department Intern',
-    org: 'GASCO',
-    summary: 'REST API integration and ERP systems inside a live IT department at a national energy company — 144 training hours.',
-  },
-  {
-    date: '2026',
+    date: '2026 — Present',
     role: 'Siemens Graduation Project',
-    org: 'Ain Shams University',
-    summary: 'Digital twin framework for validating multi-modal sensor fusion systems before silicon, with Siemens EDA and Prof. Watheq Elkharashi.',
+    org: 'Siemens EDA · Ain Shams University',
+    summary: 'Digital twin framework for validating multi-modal sensor fusion systems before silicon, advised by Prof. Watheq Elkharashi.',
   },
   {
     date: 'Leadership',
     role: 'CEO & Student Leader',
     org: 'NeuroTech ASU / Enactus',
-    summary: 'Led a 12-person team across 4 sub-teams at the BR41N.IO brain-computer interface hackathon by g.tec — real-time EEG/SSVEP classification into a live Unity simulation.',
+    summary: 'Student leadership at NeuroTech ASU and Enactus.',
   },
   {
-    date: 'June 2027',
+    date: 'Aug 2026',
+    role: 'IT Department Intern',
+    org: 'GASCO — Egyptian Natural Gas Company',
+    summary: '3–26 Aug 2026 · 144 training hours. REST API integration and ERP systems inside a live IT department. Certificate ID 12351l1x1a4y4w, verifiable with GASCO.',
+  },
+  {
+    date: 'Jul — Aug 2026',
+    role: 'Web Development using .NET',
+    org: 'ITI — Information Technology Institute',
+    summary: '144 hours: SQL Server, C#, Entity Framework, ASP.NET MVC, plus generative AI, AI agents & workflow automation.',
+    cert: 'iti-certificate.jpeg',
+  },
+  {
+    date: 'Aug 2026',
+    role: 'Desktop Application Development',
+    org: 'ECG — Engineering Consultants Group',
+    summary: '85 hours, scored 95%. C#, Entity Framework, WPF and SQL — built the Store Management System end to end.',
+    cert: 'ecg-letter.jpeg',
+  },
+  {
+    date: 'Jul 2026',
+    role: 'Summer Intern, Technology & IT',
+    org: 'CIB — Commercial International Bank',
+    summary: 'One-month technology-track internship at Egypt’s largest private-sector bank — enterprise IT systems and technical operations.',
+    cert: 'cib-certificate.png',
+  },
+  {
+    date: 'Spring 2026',
+    role: 'Project Lead — BR41N.IO Hackathon',
+    org: 'g.tec · BCI & Neurotechnology Spring School',
+    summary: 'Led 12 people in 4 sub-teams: real-time EEG/SSVEP classification bridged from Python to a live Unity simulation.',
+    cert: 'br41nio-certificate.png',
+  },
+  {
+    date: 'Jan 2026',
+    role: 'BI & Data Analytics Intern',
+    org: 'Codveda',
+    summary: '18 Power BI dashboards across 3 reporting levels; ETL and data-cleaning scripts in Python (pandas).',
+    link: { label: 'GitHub', href: 'https://github.com/nadineradwanaliradwan/Codveda-Data-Analytics-Internship' },
+  },
+  {
+    date: 'Jan — Feb 2025',
+    role: 'Cloud Computing (70 hrs)',
+    org: 'NTI / Huawei Egyptian Talent Academy',
+    summary: 'Cloud computing, virtualization and Huawei Cloud fundamentals — final exam scored 90%.',
+    cert: 'hcia-certificate.png',
+  },
+  {
+    date: 'Class of 2027',
     role: 'B.Sc. Computer Engineering',
     org: 'Ain Shams University',
     summary: 'Graduating June 2027. Embedded and real-time systems, machine learning, computer vision and software engineering.',
+  },
+];
+
+// Everything beyond the four featured folders, grouped like the previous site.
+export const moreProjects = [
+  {
+    area: 'Software & Full-Stack',
+    items: [
+      {
+        id: 'store', title: 'Store Management System', category: 'Desktop · C#',
+        summary: 'WPF desktop application for inventory and sales management with full CRUD workflows, built during ECG training.',
+        highlights: ['C#, Entity Framework, WPF', 'Built end to end for ECG training (scored 95%)'],
+        stack: ['C#', 'Entity Framework', 'WPF', 'SQL'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/StoreManagementSystem' }],
+      },
+      {
+        id: 'hr', title: 'HR Management System', category: 'Desktop · Testing',
+        summary: 'Java / JavaFX HR desktop app, built as a hands-on software-testing exercise.',
+        highlights: ['White-box and black-box testing', 'JUnit 5 Suite API runner'],
+        stack: ['Java', 'JavaFX', 'Maven', 'JUnit 5'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/HR-Management-System-' }],
+      },
+      {
+        id: 'automata', title: 'Automata Simulator', category: 'Algorithms',
+        summary: 'CFG-to-PDA, DFA and PDA simulators built in Java Swing.',
+        highlights: ['Validated against 30+ test cases'],
+        stack: ['Java', 'Swing', 'Algorithms'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/AutomataProject2026' }],
+      },
+    ],
+  },
+  {
+    area: 'Embedded & Real-Time Systems',
+    items: [
+      {
+        id: 'twin', title: 'Digital Twin for Pre-Silicon Validation', category: 'Graduation project',
+        summary: 'Digital twin framework for validating multi-modal sensor fusion systems before silicon.',
+        role: 'Graduation project with Siemens EDA · advised by Prof. Elkharashi · in progress',
+        stack: ['Sensor Fusion', 'Simulation'],
+        links: [],
+      },
+      {
+        id: 'freertos', title: 'FreeRTOS Real-Time Systems', category: 'Embedded · C',
+        summary: 'Two FreeRTOS projects on the TM4C123 exploring counting semaphores under real concurrency pressure.',
+        highlights: ['Board: TM4C123', 'Resource pool + ISR queue projects'],
+        stack: ['FreeRTOS', 'C', 'TM4C123'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/FreeRTOS-CountingSemaphores' }],
+      },
+      {
+        id: 'parking', title: 'Smart Parking Garage Gate System', category: 'Embedded · C++',
+        summary: 'Interrupt-driven, debounced access-control gate system on physical hardware.',
+        role: 'Testing & validation, plus general codebase (team project)',
+        stack: ['C++', 'Embedded'],
+        links: [{ label: 'Repository', href: 'https://github.com/Philodoescode/Smart-Parking-Garage-Gate-System-cleanest-repo-lol' }],
+      },
+    ],
+  },
+  {
+    area: 'AI & Machine Learning',
+    items: [
+      {
+        id: 'bci', title: 'BR41N.IO BCI Hackathon', category: 'EEG · Real-time ML',
+        summary: 'Real-time EEG/SSVEP classification pipeline bridging a Python signal-processing backend to a live Unity simulation.',
+        role: 'Project Lead — 12 people across 4 sub-teams',
+        highlights: ['g.tec BETA dataset', 'Python backend → live Unity simulation'],
+        stack: ['Python', 'BrainFlow', 'MNE-Python', 'Unity'],
+        links: [
+          { label: 'Colab notebook', href: 'https://colab.research.google.com/drive/1Gz5Pda3Dcg_L5kVpD5MdFTSbS7V6nqYs?usp=sharing' },
+          { label: 'Certificate', href: 'certs/br41nio-certificate.png' },
+        ],
+      },
+      {
+        id: 'rating', title: 'App-Rating Predictor', category: 'Regression',
+        summary: 'Regression pipeline predicting mobile app ratings from 12 listing features.',
+        highlights: ['RidgeCV + LightGBM', '5-fold cross-validation', '0.8 / 0.2 weighted ensemble'],
+        stack: ['Python', 'scikit-learn', 'LightGBM'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/-App-Rating-Predictor' }],
+      },
+      {
+        id: 'mushroom', title: 'Mushroom Edibility Classifier', category: 'Classification',
+        summary: 'Supervised classification of edible vs. poisonous mushrooms, engineered to avoid a trivial task.',
+        role: 'Full pipeline lead (team project)',
+        highlights: ['8,124 instances', '3+ model families compared'],
+        stack: ['Python', 'scikit-learn'],
+        links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/ML_Project_S26' }],
+      },
+      {
+        id: 'inference', title: 'Simulated AI Inference System', category: 'AI Inference',
+        summary: 'A simulated AI inference system, built as a team project with Michael Maged.',
+        stack: ['AI Inference'],
+        links: [{ label: 'Repository', href: 'https://github.com/Michael-Maged/-simulated-AI-inference-system' }],
+      },
+    ],
   },
 ];
