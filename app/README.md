@@ -9,4 +9,4 @@ npm run build    # production build in dist/
 ```
 
 All text, links, projects and experience live in `src/data.js`.
-Deployed by `.github/workflows/deploy.yml` (GitHub Pages → Source: GitHub Actions).
+Deployed on Vercel via the root `vercel.json` (installs and builds `app/`, serves `app/dist`).
