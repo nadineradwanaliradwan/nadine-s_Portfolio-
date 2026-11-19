@@ -136,7 +136,7 @@ function IntroRight() {
       <p className="max-w-[300px] text-[17px] leading-relaxed text-white/90">{profile.bio}</p>
       <a
         href="#projects"
-        className="group mt-8 inline-flex items-center gap-2 rounded-[4px] bg-white px-[18px] py-[10px] text-[14px] font-semibold text-[#111111] transition-transform hover:-translate-y-0.5"
+        className="group mt-8 inline-flex items-center gap-2 rounded-[4px] bg-accent px-[18px] py-[10px] text-[14px] font-semibold text-[#111111] transition-[transform,background-color] hover:-translate-y-0.5 hover:bg-accentHover"
       >
         Explore projects
         <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />

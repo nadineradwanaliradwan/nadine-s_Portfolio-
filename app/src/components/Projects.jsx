@@ -10,8 +10,8 @@ const pad = (n) => String(n).padStart(2, '0');
 
 function Status({ children, inverted }) {
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-[2px] font-mono text-[9px] uppercase tracking-wider ${inverted ? 'border-[#111111]/30 text-[#111111]' : 'border-white/40 text-white'}`}>
-      <span className="caret h-[5px] w-[5px] rounded-full bg-current" />
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-[2px] font-mono text-[9px] uppercase tracking-wider ${inverted ? 'border-accent text-[#111111]' : 'border-accent/60 text-accent'}`}>
+      <span className="caret h-[5px] w-[5px] rounded-full bg-accent" />
       {children}
     </span>
   );
