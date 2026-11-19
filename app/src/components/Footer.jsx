@@ -1,7 +1,6 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { nav, profile } from '../data';
-import Crowd from './Crowd';
 import { ease, inView } from './motion';
 
 // Sizes the watermark so the word spans exactly the full banner width.
@@ -22,6 +21,16 @@ function useFitText(text) {
     return () => ro.disconnect();
   }, [text]);
   return { box, probe, size };
+}
+
+function CairoTime() {
+  const fmt = () => new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit' }).format(new Date());
+  const [t, setT] = useState(fmt);
+  useEffect(() => {
+    const id = setInterval(() => setT(fmt()), 15000);
+    return () => clearInterval(id);
+  }, []);
+  return <span className="tabular-nums">{t}</span>;
 }
 
 const word = profile.short.replace('.', '').toUpperCase();
@@ -75,21 +84,35 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Full-bleed white banner: watermark behind, crowd in front */}
-      <div ref={banner} className="relative overflow-hidden bg-white">
-        <div ref={box} className="relative w-full pb-[56px] pt-10 sm:pb-[90px] lg:pb-[120px]" aria-hidden>
+      {/* Full-bleed white banner: the name, set edge to edge */}
+      <div ref={banner} className="relative overflow-hidden bg-white text-[#111111]">
+        <div ref={box} className="relative w-full pt-12 sm:pt-16" aria-hidden>
           <span ref={probe} className="invisible absolute left-0 top-0 whitespace-nowrap font-cond font-extrabold leading-none" style={{ fontSize: 100, ...condensed }}>
             {word}
           </span>
           <motion.p
             style={{ y: wordY, fontSize: size, ...condensed }}
-            className="select-none whitespace-nowrap text-center font-cond font-extrabold uppercase leading-[0.8] text-ghost"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="flex select-none justify-center whitespace-nowrap font-cond font-extrabold uppercase leading-[0.8]"
           >
-            {word}
+            {word.split('').map((ch, i) => (
+              <span key={i} className="inline-block overflow-hidden pb-[0.02em]">
+                <motion.span
+                  className="inline-block"
+                  variants={{ hidden: { y: '100%' }, show: { y: 0, transition: { duration: 0.9, ease, delay: i * 0.06 } } }}
+                >
+                  {ch}
+                </motion.span>
+              </span>
+            ))}
           </motion.p>
         </div>
-        <div className="absolute inset-x-0 bottom-0">
-          <Crowd className="h-[120px] sm:h-[190px] lg:h-[240px]" />
+        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-[#111111]/10 px-5 py-5 font-mono text-[11px] text-[#111111]/60 sm:px-8">
+          <span>©2026 {profile.fullName}</span>
+          <span>Cairo, Egypt · <CairoTime /></span>
+          <span className="hidden sm:inline">Software engineer, in progress.</span>
         </div>
       </div>
     </footer>
