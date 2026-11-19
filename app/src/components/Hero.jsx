@@ -194,10 +194,10 @@ export default function Hero() {
             style={{ scale: textScale, opacity: textOpacity, y: textY }}
             className="relative select-none text-center font-display text-[13.5vw] font-bold uppercase leading-[0.86] tracking-[-0.04em] text-fg md:flex md:h-full md:flex-col md:justify-center md:text-[12.5vw]"
           >
-            <span className="sr-only">Computer Engineer</span>
+            <span className="sr-only">Software Engineer</span>
             <span className="flex items-baseline justify-center gap-[0.12em]">
               <Bracket from={60} delay={0.9}>&lt;</Bracket>
-              <Chars text="COMPUTER" delay={0.15} />
+              <Chars text="SOFTWARE" delay={0.15} />
             </span>
             <span className="flex items-baseline justify-center gap-[0.12em]">
               <Chars text="ENGINEER" delay={0.4} />
