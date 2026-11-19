@@ -1,112 +1,79 @@
-import { useEffect, useState } from 'react';
-import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { nav, profile } from '../data';
-import Magnetic from './Magnetic';
-import { ease } from './Reveal';
-
-function useActiveSection(ids) {
-  const [active, setActive] = useState('');
-  useEffect(() => {
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => e.isIntersecting && setActive(e.target.id));
-      },
-      { rootMargin: '-45% 0px -50% 0px' }
-    );
-    els.forEach((el) => io.observe(el));
-    const onTop = () => window.scrollY < 200 && setActive('');
-    window.addEventListener('scroll', onTop, { passive: true });
-    return () => { io.disconnect(); window.removeEventListener('scroll', onTop); };
-  }, [ids]);
-  return active;
-}
-
-const ids = nav.map((n) => n.id);
-
-function Pill({ active, idPrefix }) {
-  return (
-    <ul className="flex items-center gap-0.5 rounded-full border border-line bg-ink/70 p-1 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl">
-      {nav.map((item) => (
-        <li key={item.id} className="relative">
-          {active === item.id && (
-            <motion.span
-              layoutId={`${idPrefix}-pill`}
-              className="absolute inset-0 rounded-full bg-white"
-              transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-            />
-          )}
-          <a
-            href={`#${item.id}`}
-            className={`relative z-10 block rounded-full px-3 py-1.5 text-[13px] font-medium transition-colors duration-200 sm:px-4 ${
-              active === item.id ? 'text-ink' : 'text-muted hover:text-fg'
-            }`}
-          >
-            {item.label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export function StatusDot({ className = '' }) {
-  return (
-    <span className={`relative inline-flex h-2 w-2 ${className}`}>
-      <span className="pulse-ring absolute inset-0 rounded-full bg-emerald-400" />
-      <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
-    </span>
-  );
-}
+import { ease } from './motion';
 
 export default function Navbar() {
-  const active = useActiveSection(ids);
-  // Hide the top bar while scrolling down, reveal it on scroll up.
-  const { scrollY } = useScroll();
-  const [hidden, setHidden] = useState(false);
-  useMotionValueEvent(scrollY, 'change', (y) => {
-    const prev = scrollY.getPrevious() ?? 0;
-    setHidden((h) => (y > 400 && y > prev + 2 ? true : y < prev - 2 ? false : h));
-  });
-  return (
-    <>
-      <motion.header
-        initial={{ y: -24, opacity: 0 }}
-        animate={{ y: hidden ? -100 : 0, opacity: hidden ? 0 : 1 }}
-        transition={{ duration: hidden ? 0.35 : 0.6, ease }}
-        className="fixed inset-x-0 top-0 z-50"
-      >
-        <div aria-hidden className="pointer-events-none absolute inset-0 -bottom-6 bg-gradient-to-b from-ink/90 via-ink/50 to-transparent" />
-        <nav aria-label="Primary" className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-8">
-          <a href="#top" className="group flex items-center gap-2 font-mono text-sm font-medium text-fg">
-            <span className="grid h-8 w-8 place-items-center rounded-lg border border-line bg-surface transition-transform duration-300 group-hover:rotate-[-8deg]">NR</span>
-            <span className="hidden text-muted transition-colors group-hover:text-fg sm:inline">nadine.radwan</span>
-          </a>
-          <div className="hidden md:block">
-            <Magnetic strength={0.12}>
-              <Pill active={active} idPrefix="desk" />
-            </Magnetic>
-          </div>
-          <div className="flex shrink-0 items-center gap-2 rounded-full border border-line bg-ink/60 px-3 py-1.5 font-mono text-[11px] text-muted backdrop-blur-xl">
-            <StatusDot />
-            <span className="hidden lg:inline">Available for opportunities · {profile.location}</span>
-            <span className="lg:hidden">Available</span>
-          </div>
-        </nav>
-      </motion.header>
+  const [open, setOpen] = useState(false);
+  const panel = useRef(null);
+  const toggle = useRef(null);
 
-      {/* Mobile: the pill floats at the bottom, within thumb reach */}
-      <motion.nav
-        aria-label="Sections"
-        initial={{ y: 40, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease, delay: 0.6 }}
-        className="fixed inset-x-0 bottom-4 z-50 flex justify-center px-2 md:hidden"
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === 'Escape' && (setOpen(false), toggle.current?.focus());
+    const onDown = (e) => {
+      if (!panel.current?.contains(e.target) && !toggle.current?.contains(e.target)) setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('pointerdown', onDown);
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('pointerdown', onDown); };
+  }, [open]);
+
+  return (
+    <header className="fixed inset-x-0 top-0 z-50">
+      {/* difference blend keeps the bar legible over both #111 and the white footer banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease, delay: 0.2 }}
+        className="mx-auto flex max-w-[1240px] items-center justify-between px-5 py-5 mix-blend-difference sm:px-8"
       >
-        <div className="no-scrollbar max-w-full overflow-x-auto">
-          <Pill active={active} idPrefix="mob" />
-        </div>
-      </motion.nav>
-    </>
+        <a href="#top" className="text-[14px] font-medium text-white">{profile.short}</a>
+        <button
+          ref={toggle}
+          type="button"
+          aria-expanded={open}
+          aria-controls="site-menu"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((o) => !o)}
+          className="group relative flex h-[22px] w-[36px] flex-col items-center justify-center gap-[3px] rounded-[6px] bg-white"
+        >
+          <motion.span animate={open ? { rotate: 45, y: 2.5 } : { rotate: 0, y: 0 }} className="block h-[2px] w-[14px] rounded-full bg-[#111111]" />
+          <motion.span animate={open ? { rotate: -45, y: -2.5 } : { rotate: 0, y: 0 }} className="block h-[2px] w-[14px] rounded-full bg-[#111111]" />
+        </button>
+      </motion.div>
+
+      <div className="relative mx-auto max-w-[1240px]">
+      <AnimatePresence>
+        {open && (
+          <motion.nav
+            id="site-menu"
+            ref={panel}
+            aria-label="Primary"
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.25, ease }}
+            className="absolute right-5 top-[-4px] w-[200px] origin-top-right rounded-[6px] border border-line bg-card p-2 sm:right-8"
+          >
+            <ul>
+              {nav.map((n, i) => (
+                <motion.li key={n.id} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.04 * i, duration: 0.25, ease }}>
+                  <a
+                    href={`#${n.id}`}
+                    onClick={() => setOpen(false)}
+                    className="group flex items-center justify-between rounded-[4px] px-3 py-2 text-[14px] text-muted transition-colors hover:bg-white hover:text-[#111111]"
+                  >
+                    {n.label}
+                    <span className="font-mono text-[10px] opacity-60">0{i + 1}</span>
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+      </div>
+    </header>
   );
 }

@@ -1,121 +1,96 @@
-import { useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { ArrowUp } from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { nav, profile } from '../data';
-import Magnetic from './Magnetic';
 import Crowd from './Crowd';
-import { ease } from './Reveal';
+import { ease, inView } from './motion';
 
-function CairoClock() {
-  const fmt = () =>
-    new Intl.DateTimeFormat('en-GB', { timeZone: 'Africa/Cairo', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
-  const [t, setT] = useState(fmt);
-  useEffect(() => {
-    const id = setInterval(() => setT(fmt()), 1000);
-    return () => clearInterval(id);
-  }, []);
-  return <span className="tabular-nums">{t}</span>;
+// Sizes the watermark so the word spans exactly the full banner width.
+function useFitText(text) {
+  const box = useRef(null);
+  const probe = useRef(null);
+  const [size, setSize] = useState(200);
+  useLayoutEffect(() => {
+    const fit = () => {
+      if (!box.current || !probe.current) return;
+      const w = probe.current.getBoundingClientRect().width; // measured at 100px
+      if (w) setSize((97 * box.current.clientWidth) / w);
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    const ro = new ResizeObserver(fit);
+    ro.observe(box.current);
+    return () => ro.disconnect();
+  }, [text]);
+  return { box, probe, size };
 }
 
-export default function Footer() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end end'] });
-  const p = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-  const wordY = useTransform(p, [0, 1], ['35%', '0%']);
-  const wordScale = useTransform(p, [0, 1], [0.94, 1]);
+const word = profile.short.replace('.', '').toUpperCase();
+const condensed = { fontStretch: '62%', fontVariationSettings: '"wdth" 62' };
 
-  const cols = [
-    { title: 'Navigate', links: nav.map((n) => ({ label: n.label, href: `#${n.id}` })) },
-    {
-      title: 'Elsewhere',
-      links: [
-        { label: 'GitHub', href: profile.github, ext: true },
-        { label: 'LinkedIn', href: profile.linkedin, ext: true },
-        { label: 'Email', href: `mailto:${profile.email}` },
-        { label: 'Download CV', href: `${import.meta.env.BASE_URL}${profile.cv}`, ext: true },
-      ],
-    },
-  ];
+export default function Footer() {
+  const { box, probe, size } = useFitText(word);
+  const banner = useRef(null);
+  const { scrollYProgress } = useScroll({ target: banner, offset: ['start end', 'end end'] });
+  const wordY = useTransform(scrollYProgress, [0, 1], ['18%', '0%']);
+
+  const top = () => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 
   return (
-    <footer ref={ref} className="relative overflow-hidden rounded-t-[2rem] bg-paper text-ink sm:rounded-t-[3rem]">
-      <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-8 sm:pt-24">
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-          <div className="overflow-hidden pb-2">
-            <motion.h2
-              initial={{ y: '100%' }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.9, ease }}
-              className="font-display text-5xl font-bold tracking-tight sm:text-7xl"
-            >
+    <footer>
+      <div className="mx-auto max-w-[1240px] px-5 pb-12 pt-20 sm:px-8">
+        <div className="grid gap-10 border-t border-line pt-12 md:grid-cols-3">
+          <div>
+            <p className="text-[18px] font-semibold tracking-head">{profile.short}</p>
+            <p className="mt-1 text-[13px] text-muted">{profile.tagline}</p>
+          </div>
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Explore</p>
+            <ul className="mt-3 flex max-w-[300px] flex-wrap gap-x-5 gap-y-2 text-[14px]">
+              {nav.map((n) => (
+                <li key={n.id}>
+                  <a href={`#${n.id}`} className="group relative text-white">
+                    {n.label}
+                    <span className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-white transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:text-right">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">Get in touch</p>
+            <a href={`mailto:${profile.email}`} className="mt-3 block text-[14px] text-white hover:underline">{profile.email}</a>
+            <p className="mt-1 text-[13px] text-muted">©2026 {profile.name}</p>
+          </div>
+        </div>
+
+        <div className="mt-16 flex items-end justify-between gap-4">
+          <div className="overflow-hidden">
+            <motion.p initial={{ y: '100%' }} whileInView={{ y: 0 }} viewport={inView} transition={{ duration: 0.8, ease }} className="text-[24px] font-bold tracking-head">
               See you around.
-            </motion.h2>
+            </motion.p>
           </div>
-          <Magnetic>
-            <button
-              type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}
-              className="group inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper transition-shadow hover:shadow-[0_10px_30px_rgba(0,0,0,0.25)]"
-            >
-              Back to top
-              <ArrowUp size={16} className="transition-transform duration-300 group-hover:-translate-y-1" />
-            </button>
-          </Magnetic>
-        </div>
-
-        <div className="mt-14 grid grid-cols-2 gap-10 border-t border-ink/10 pt-10 md:grid-cols-4">
-          {cols.map((c) => (
-            <div key={c.title}>
-              <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink/50">{c.title}</p>
-              <ul className="space-y-2">
-                {c.links.map((l) => (
-                  <li key={l.label}>
-                    <a
-                      href={l.href}
-                      {...(l.ext ? { target: '_blank', rel: 'noreferrer' } : {})}
-                      className="group relative inline-block text-sm font-medium"
-                    >
-                      {l.label}
-                      <span className="absolute -bottom-0.5 left-0 h-px w-full origin-right scale-x-0 bg-ink transition-transform duration-300 group-hover:origin-left group-hover:scale-x-100" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-          <div>
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink/50">Local time</p>
-            <p className="text-sm font-medium">Cairo, EG · <CairoClock /></p>
-          </div>
-          <div>
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink/50">Status</p>
-            <p className="flex items-center gap-2 text-sm font-medium">
-              <span className="relative inline-flex h-2 w-2">
-                <span className="pulse-ring absolute inset-0 rounded-full bg-emerald-500" />
-                <span className="relative h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              Available for opportunities
-            </p>
-          </div>
+          <button type="button" onClick={top} className="group flex items-center gap-1 text-[12px] text-muted transition-colors hover:text-white">
+            Back to top <span className="inline-block transition-transform duration-300 group-hover:-translate-y-1">↑</span>
+          </button>
         </div>
       </div>
 
-      <div className="relative mt-12 select-none" aria-hidden>
-        <motion.p
-          style={{ y: wordY, scale: wordScale }}
-          className="origin-bottom text-center font-display whitespace-nowrap text-[31vw] font-bold uppercase leading-[0.78] tracking-[-0.065em] text-ink"
-        >
-          {profile.first}
-        </motion.p>
-      </div>
-
-      <div className="relative -mt-[4vw]">
-        <Crowd />
-      </div>
-      <div className="flex flex-col items-center justify-between gap-2 bg-ink px-4 py-4 pb-24 font-mono text-[11px] text-paper/60 sm:flex-row sm:px-8 md:pb-4">
-        <span>© 2026 {profile.name}</span>
-        <span>Built with React · Tailwind · Framer Motion</span>
+      {/* Full-bleed white banner: watermark behind, crowd in front */}
+      <div ref={banner} className="relative overflow-hidden bg-white">
+        <div ref={box} className="relative w-full pb-[56px] pt-10 sm:pb-[90px] lg:pb-[120px]" aria-hidden>
+          <span ref={probe} className="invisible absolute left-0 top-0 whitespace-nowrap font-cond font-extrabold leading-none" style={{ fontSize: 100, ...condensed }}>
+            {word}
+          </span>
+          <motion.p
+            style={{ y: wordY, fontSize: size, ...condensed }}
+            className="select-none whitespace-nowrap text-center font-cond font-extrabold uppercase leading-[0.8] text-ghost"
+          >
+            {word}
+          </motion.p>
+        </div>
+        <div className="absolute inset-x-0 bottom-0">
+          <Crowd className="h-[120px] sm:h-[190px] lg:h-[240px]" />
+        </div>
       </div>
     </footer>
   );

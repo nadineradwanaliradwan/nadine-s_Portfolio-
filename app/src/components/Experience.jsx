@@ -1,43 +1,42 @@
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion';
-import { Plus } from 'lucide-react';
+import { motion, useMotionValueEvent, useScroll, useSpring } from 'framer-motion';
 import { experience } from '../data';
-import { SectionHeading, ease } from './Reveal';
+import SectionTitle from './SectionTitle';
+import { ease, inView } from './motion';
 
-// Builds an undulating path through the measured node centres.
-function buildPath(pts, swing) {
-  if (pts.length < 2) return '';
-  const [first] = pts;
-  let d = `M ${first.x} ${Math.max(0, first.y - 60)} L ${first.x} ${first.y}`;
+const WAVE_H = 96;
+const AMP = 26;
+
+// Smooth wave through points with horizontal tangents at every node (peaks & valleys).
+function wavePath(pts) {
+  let d = `M ${pts[0].x} ${pts[0].y}`;
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1];
     const b = pts[i];
-    const dy = b.y - a.y;
-    const s = (i % 2 ? 1 : -1) * swing;
-    d += ` C ${a.x + s} ${a.y + dy * 0.45}, ${b.x + s} ${b.y - dy * 0.45}, ${b.x} ${b.y}`;
+    const mx = (b.x - a.x) / 2;
+    d += ` C ${a.x + mx} ${a.y}, ${b.x - mx} ${b.y}, ${b.x} ${b.y}`;
   }
-  const last = pts[pts.length - 1];
-  return `${d} L ${last.x} ${last.y + 60}`;
+  return d;
 }
 
 export default function Experience() {
   const wrap = useRef(null);
-  const anchors = useRef([]);
-  const [geo, setGeo] = useState({ w: 0, h: 0, d: '' });
+  const cols = useRef([]);
+  const [geo, setGeo] = useState({ w: 0, nodes: [], d: '' });
   const [lit, setLit] = useState(0);
   const [active, setActive] = useState(0);
-  const [hover, setHover] = useState(null);
 
   const measure = useCallback(() => {
     const el = wrap.current;
     if (!el) return;
     const r = el.getBoundingClientRect();
-    const pts = anchors.current.filter(Boolean).map((a) => {
-      const b = a.getBoundingClientRect();
-      return { x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2 };
-    });
-    const swing = r.width < 768 ? 22 : 90;
-    setGeo({ w: r.width, h: r.height, d: buildPath(pts, swing) });
+    const mid = WAVE_H / 2;
+    const nodes = cols.current.filter(Boolean).map((c, i) => ({
+      x: c.getBoundingClientRect().left - r.left + 5,
+      y: i % 2 === 0 ? mid - AMP : mid + AMP,
+    }));
+    const pts = [...nodes, { x: r.width, y: nodes.length % 2 ? mid + AMP * 0.6 : mid - AMP * 0.6 }];
+    setGeo({ w: r.width, nodes, d: wavePath(pts) });
   }, []);
 
   useLayoutEffect(() => {
@@ -45,134 +44,90 @@ export default function Experience() {
     const ro = new ResizeObserver(measure);
     ro.observe(wrap.current);
     return () => ro.disconnect();
-  }, [measure, active]);
+  }, [measure]);
 
-  const { scrollYProgress } = useScroll({ target: wrap, offset: ['start 75%', 'end 65%'] });
-  const draw = useSpring(scrollYProgress, { stiffness: 90, damping: 25, restDelta: 0.001 });
+  const { scrollYProgress } = useScroll({ target: wrap, offset: ['start 85%', 'center 50%'] });
+  const draw = useSpring(scrollYProgress, { stiffness: 80, damping: 24, restDelta: 0.001 });
   useMotionValueEvent(draw, 'change', (v) => {
+    // node i sits at roughly (i + 0.5) / n along the path
     const n = experience.length;
-    const count = v <= 0.02 ? 0 : Math.min(n, Math.floor(v * (n - 1) + 0.08) + 1);
+    const count = experience.filter((_, i) => v >= (i + 0.35) / (n + 0.2)).length;
     setLit((c) => (c === count ? c : count));
   });
 
   return (
-    <section id="experience" className="relative mx-auto max-w-7xl px-4 py-28 sm:px-8">
-      <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <SectionHeading kicker="04 — Experience">Experience.</SectionHeading>
-        <div className="space-y-1 text-left font-mono text-xs text-muted md:text-right">
-          <p>↑ Current work</p>
-          <p>↓ Back to the foundations</p>
+    <section id="experience" className="mx-auto max-w-[1240px] py-28">
+      <div className="flex items-end justify-between gap-6 px-5 sm:px-8">
+        <SectionTitle size={36}>Experience.</SectionTitle>
+        <div className="text-right font-mono text-[11px] leading-relaxed text-muted">
+          <p>Current work</p>
+          <p>Back to the foundations</p>
         </div>
       </div>
 
-      <div ref={wrap} className="relative mt-16">
-        <svg aria-hidden width={geo.w} height={geo.h} className="pointer-events-none absolute inset-0 overflow-visible">
-          <path d={geo.d} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" strokeDasharray="4 6" />
-          <motion.path d={geo.d} fill="none" stroke="rgba(255,255,255,0.85)" strokeWidth="1.5" strokeLinecap="round" style={{ pathLength: draw }} />
-        </svg>
+      <div className="no-scrollbar mt-14 overflow-x-auto px-5 sm:px-8">
+        <div ref={wrap} className="relative min-w-[880px]">
+          <svg aria-hidden width={geo.w} height={WAVE_H} className="block overflow-visible">
+            <path d={geo.d} fill="none" stroke="#262626" strokeWidth="1.5" />
+            <motion.path d={geo.d} fill="none" stroke="#333333" strokeWidth="1.5" style={{ pathLength: draw }} />
+            <motion.path d={geo.d} fill="none" stroke="#FFFFFF" strokeOpacity="0.35" strokeWidth="1" style={{ pathLength: draw }} />
+          </svg>
 
-        <ol className="relative space-y-10 md:space-y-4">
-          {experience.map((e, i) => {
-            const isLit = i < lit;
-            const isOpen = active === i;
-            const isHot = hover === i || isOpen;
-            const left = i % 2 === 0;
+          {geo.nodes.map((n, i) => {
+            const on = active === i;
             return (
-              <li key={e.id} className="grid grid-cols-[44px_1fr] items-start gap-4 md:grid-cols-[1fr_200px_1fr] md:gap-0">
-                {/* Node */}
-                <div className={`row-start-1 flex justify-center pt-6 md:col-start-2 ${left ? 'md:-translate-x-8' : 'md:translate-x-8'} ${i % 2 ? 'translate-x-1' : '-translate-x-1'} md:translate-y-0`}>
-                  <div ref={(el) => (anchors.current[i] = el)} className="relative h-5 w-5">
-                    <button
-                      type="button"
-                      aria-label={`Show ${e.title}`}
-                      onClick={() => setActive(i)}
-                      onPointerEnter={() => setHover(i)}
-                      onPointerLeave={() => setHover(null)}
-                      className="absolute inset-0 grid place-items-center rounded-full"
-                    >
-                      {isLit && (
-                        <motion.span
-                          key="ring"
-                          initial={{ scale: 1, opacity: 0.8 }}
-                          animate={{ scale: 3, opacity: 0 }}
-                          transition={{ duration: 1.1, ease: 'easeOut' }}
-                          className="absolute inset-0 rounded-full border border-white"
-                        />
-                      )}
-                      {isOpen && isLit && <span className="pulse-ring absolute inset-0 rounded-full bg-white/30" />}
-                      <motion.span
-                        animate={{
-                          scale: isHot ? 1.25 : 1,
-                          backgroundColor: isLit ? '#FFFFFF' : '#0E0E10',
-                          borderColor: isLit ? '#FFFFFF' : 'rgba(255,255,255,0.25)',
-                        }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-                        className="relative h-5 w-5 rounded-full border-2"
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Card */}
-                <motion.div
-                  initial={{ opacity: 0, x: left ? -30 : 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: '-80px' }}
-                  transition={{ duration: 0.8, ease }}
-                  className={`row-start-1 ${left ? 'md:col-start-1' : 'md:col-start-3'}`}
-                >
-                  <motion.button
-                    type="button"
-                    layout
-                    onClick={() => setActive(i)}
-                    onPointerEnter={() => setHover(i)}
-                    onPointerLeave={() => setHover(null)}
-                    aria-expanded={isOpen}
-                    animate={{ y: hover === i && !isOpen ? -3 : 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-                    className={`w-full rounded-2xl border p-5 text-left transition-colors duration-300 sm:p-6 ${
-                      isOpen ? 'border-white/30 bg-raised' : 'border-line bg-surface/50 hover:border-white/15'
-                    } ${isLit ? '' : 'opacity-60'}`}
-                  >
-                    <motion.div layout="position" className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-wider text-muted">
-                          <span>{e.date}</span>
-                          {e.note && <span className="rounded-full border border-line px-2 py-0.5 normal-case tracking-normal">{e.note}</span>}
-                        </div>
-                        <h3 className="mt-2 font-display text-lg font-semibold leading-snug text-fg sm:text-xl">{e.title}</h3>
-                        <p className="mt-1 text-sm text-muted">{e.org}</p>
-                      </div>
-                      <motion.span animate={{ rotate: isOpen ? 45 : 0 }} className="mt-1 shrink-0 text-muted">
-                        <Plus size={18} />
-                      </motion.span>
-                    </motion.div>
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.4, ease }}
-                          onAnimationComplete={measure}
-                          className="overflow-hidden"
-                        >
-                          <p className="pt-4 text-sm leading-relaxed text-fg/80">{e.body}</p>
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {e.tags.map((t) => (
-                              <span key={t} className="rounded-full border border-line px-2.5 py-1 text-xs text-fg/75">{t}</span>
-                            ))}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.button>
-                </motion.div>
-              </li>
+              <motion.button
+                key={i}
+                type="button"
+                aria-label={`Highlight ${experience[i].role}`}
+                onClick={() => setActive(i)}
+                onPointerEnter={() => setActive(i)}
+                initial={false}
+                animate={{ scale: i < lit ? 1 : 0, opacity: i < lit ? 1 : 0 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 18 }}
+                className="absolute -ml-[5px] -mt-[5px] h-[10px] w-[10px] rounded-full"
+                style={{
+                  left: n.x,
+                  top: n.y,
+                  background: on ? '#FFFFFF' : '#1A1A1A',
+                  border: on ? '1px solid #FFFFFF' : '1px solid #333333',
+                  boxShadow: on ? '0 0 0 4px #111111, 0 0 0 5px #FFFFFF' : 'none',
+                  transition: 'background 200ms, box-shadow 200ms, border-color 200ms',
+                }}
+              />
             );
           })}
-        </ol>
+
+          <ol className="mt-6 grid grid-cols-4 gap-8">
+            {experience.map((e, i) => (
+              <motion.li
+                key={e.role}
+                ref={(el) => (cols.current[i] = el)}
+                onPointerEnter={() => setActive(i)}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={inView}
+                transition={{ duration: 0.6, ease, delay: 0.15 + i * 0.12 }}
+                className="cursor-default"
+              >
+                <span
+                  className={`inline-block rounded-full px-2.5 py-[3px] font-mono text-[10px] transition-colors duration-200 ${
+                    active === i ? 'bg-white text-[#111111]' : 'border border-line text-white'
+                  }`}
+                >
+                  {e.date}
+                </span>
+                <h3 className="mt-4 text-[16px] font-bold leading-snug text-white">{e.role}</h3>
+                <p className="mt-1 text-[13px] text-muted">{e.org}</p>
+                <p className={`mt-3 max-w-[260px] text-[13px] leading-relaxed transition-colors duration-200 ${active === i ? 'text-white/75' : 'text-muted'}`}>
+                  {e.summary}
+                </p>
+              </motion.li>
+            ))}
+          </ol>
+        </div>
       </div>
+      <p className="mt-6 px-5 font-mono text-[10px] text-muted sm:hidden">Swipe →</p>
     </section>
   );
 }
