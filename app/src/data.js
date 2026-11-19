@@ -130,9 +130,9 @@ export const projects = [
 export const experience = [
   {
     date: '2026 — Present',
-    role: 'Siemens Graduation Project',
+    role: 'Siemens Graduation Project — Digital Twin Verification',
     org: 'Siemens EDA · Ain Shams University',
-    summary: 'UCIe-compliant hardware IP that carries AXI transactions between chiplets over a die-to-die link, integrated and validated in Siemens’ chiplet verification environment with automotive co-simulation. Supervised by Prof. Watheq Elkharashi and Dr. Mohamed AbdElSalam (Siemens EDA).',
+    summary: 'Digital twin verification team: integrating and validating a UCIe chiplet design (AXI over a die-to-die link) in Siemens’ Innexis chiplet verification environment, with automotive-scenario and EGO-vehicle co-simulation. Supervised by Prof. Watheq Elkharashi and Dr. Mohamed AbdElSalam (Siemens EDA).',
   },
   {
     date: '3 – 26 Aug 2026',
@@ -222,15 +222,17 @@ export const moreProjects = [
     area: 'Embedded & Real-Time Systems',
     items: [
       {
-        id: 'twin', title: 'UCIe Chiplet Hardware IP & Digital Twin', category: 'Graduation project',
-        summary: 'Design and implementation of a UCIe-compliant hardware IP for chiplet-based digital twin integration — a Siemens EDA × Ain Shams graduation project.',
-        role: 'Supervised by Prof. Watheq Elkharashi (Ain Shams) and Dr. Mohamed AbdElSalam (Siemens EDA) · 2026–2027, in progress',
+        id: 'twin', title: 'Chiplet Digital Twin Verification (UCIe)', category: 'Graduation project · Siemens EDA',
+        summary: 'Siemens EDA × Ain Shams graduation project: a UCIe-compliant chiplet hardware IP for digital twin integration. I’m on the digital twin verification team.',
+        role: 'Digital twin verification team — integrating and validating the chiplet DUT in Siemens Innexis with automotive co-simulation. Supervised by Prof. Watheq Elkharashi (Ain Shams) and Dr. Mohamed AbdElSalam (Siemens EDA).',
+        status: 'In progress · 2026–2027',
         highlights: [
-          'Group A — RTL design: UCIe protocol adapter translating AXI transactions into UCIe packets, plus a die-to-die adapter for framing and flow control',
-          'Group B — integration & validation of the chiplet DUT in Siemens Innexis Developer Pro Hybrid and Innexis VSI, with automotive-scenario and EGO-vehicle co-simulation',
+          'My team: integration & validation of the chiplet DUT in Siemens Innexis Developer Pro Hybrid and Innexis Virtual System Interconnect (VSI)',
+          'Automotive-scenario simulation with mechatronics EGO-vehicle co-simulation',
+          'Partner team designs the RTL: a UCIe protocol adapter (AXI → UCIe packets) and a die-to-die adapter for framing and flow control',
           'Targets bandwidth utilisation, latency and protocol overhead across dies',
         ],
-        stack: ['UCIe', 'AXI', 'RTL', 'Chiplets', 'Siemens Innexis'],
+        stack: ['Verification', 'Digital Twin', 'UCIe', 'AXI', 'Siemens Innexis', 'Co-simulation'],
         links: [],
       },
       {
@@ -288,9 +290,26 @@ export const moreProjects = [
   },
 ];
 
+// In-progress work not covered above.
+const inProgress = [
+  {
+    id: 'quiz', title: 'Quiz Arena', category: 'Mobile · Flutter',
+    status: 'In progress · started Nov 2026',
+    summary: 'Competitive Flutter trivia game for CSE 431 / CSE 442 Mobile Programming (Fall 2026) — timed multiple-choice questions from the Open Trivia Database.',
+    role: 'Course major task (Option 2) — project just started; features below are the planned scope.',
+    highlights: [
+      'Planned: category & difficulty picker, points for speed and accuracy, answer streaks',
+      'Planned: pass-and-play, remote challenges with a shared question set, global & weekly leaderboards',
+      'Planned: user-made question packs, offline play with cached questions and deferred score upload',
+    ],
+    stack: ['Flutter', 'Dart', 'REST API', 'Open Trivia DB'],
+    links: [{ label: 'Repository', href: 'https://github.com/nadineradwanaliradwan/QUIZ-ARENA' }],
+  },
+];
+
 // Folders on the Projects section = categories. Order inside each list = order shown (strongest first).
 const byId = Object.fromEntries(
-  [...projects, ...moreProjects.flatMap((g) => g.items)].map((p) => [p.id, p])
+  [...projects, ...moreProjects.flatMap((g) => g.items), ...inProgress].map((p) => [p.id, p])
 );
 const pick = (ids) => ids.map((id) => {
   if (!byId[id]) throw new Error(`Unknown project id: ${id}`);
@@ -299,9 +318,9 @@ const pick = (ids) => ids.map((id) => {
 
 export const categories = [
   {
-    id: 'web', title: 'Web & Full-Stack', icon: 'layers',
-    blurb: 'Full-stack applications across React, Node / Express, Laravel and ASP.NET Core.',
-    projects: pick(['reddit', 'asuums', 'courses']),
+    id: 'web', title: 'Web, Mobile & Full-Stack', icon: 'layers',
+    blurb: 'Full-stack and mobile applications across React, Node / Express, Laravel, ASP.NET Core and Flutter.',
+    projects: pick(['reddit', 'asuums', 'courses', 'quiz']),
   },
   {
     id: 'ai', title: 'AI, ML & Computer Vision', icon: 'brain',

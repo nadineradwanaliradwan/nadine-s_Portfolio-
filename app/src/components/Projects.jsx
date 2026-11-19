@@ -8,6 +8,15 @@ import { ease, inView } from './motion';
 const icons = { layers: Layers, brain: BrainCircuit, cpu: Cpu, window: AppWindow };
 const pad = (n) => String(n).padStart(2, '0');
 
+function Status({ children, inverted }) {
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-[2px] font-mono text-[9px] uppercase tracking-wider ${inverted ? 'border-[#111111]/30 text-[#111111]' : 'border-white/40 text-white'}`}>
+      <span className="caret h-[5px] w-[5px] rounded-full bg-current" />
+      {children}
+    </span>
+  );
+}
+
 /* ---------- Folder (one per category) ---------- */
 const sheetV = [
   { rest: { y: 0, rotate: 0, x: 0 }, hover: { y: -22, rotate: -3, x: -6 } },
@@ -108,7 +117,11 @@ function FolderView({ cat, onPick }) {
             >
               <span className="font-mono text-[11px] text-muted group-hover:text-[#111111]">{pad(i + 1)}</span>
               <span>
-                <span className="block text-[15px] font-semibold tracking-head text-white group-hover:text-[#111111]">{p.title}</span>
+                <span className="flex flex-wrap items-center gap-2">
+                  <span className="text-[15px] font-semibold tracking-head text-white group-hover:text-[#111111]">{p.title}</span>
+                  {p.status && <span className="group-hover:hidden"><Status>{p.status.split(' · ')[0]}</Status></span>}
+                  {p.status && <span className="hidden group-hover:inline"><Status inverted>{p.status.split(' · ')[0]}</Status></span>}
+                </span>
                 <span className="mt-1 block text-[13px] leading-snug text-muted group-hover:text-[#111111]/70">{p.summary}</span>
                 <span className="mt-2 block font-mono text-[10px] uppercase tracking-wider text-muted group-hover:text-[#111111]/60">{p.stack.slice(0, 4).join(' · ')}</span>
               </span>
@@ -127,7 +140,10 @@ function ProjectView({ p, cat, onBack }) {
       <motion.button variants={up} type="button" onClick={onBack} className="group inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted transition-colors hover:text-white">
         <ArrowLeft size={12} className="transition-transform group-hover:-translate-x-0.5" /> {cat.title}
       </motion.button>
-      <motion.p variants={up} className="mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{p.category}</motion.p>
+      <motion.div variants={up} className="mt-5 flex flex-wrap items-center gap-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted">{p.category}</span>
+        {p.status && <Status>{p.status}</Status>}
+      </motion.div>
       <motion.h3 variants={up} id="pm-title" className="mt-2 pr-10 text-[30px] font-bold leading-tight tracking-head">{p.title}</motion.h3>
       <motion.p variants={up} className="mt-4 text-[15px] leading-relaxed text-white/85">{p.summary}</motion.p>
 
