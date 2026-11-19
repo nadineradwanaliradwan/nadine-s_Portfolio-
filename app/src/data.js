@@ -287,3 +287,35 @@ export const moreProjects = [
     ],
   },
 ];
+
+// Folders on the Projects section = categories. Order inside each list = order shown (strongest first).
+const byId = Object.fromEntries(
+  [...projects, ...moreProjects.flatMap((g) => g.items)].map((p) => [p.id, p])
+);
+const pick = (ids) => ids.map((id) => {
+  if (!byId[id]) throw new Error(`Unknown project id: ${id}`);
+  return byId[id];
+});
+
+export const categories = [
+  {
+    id: 'web', title: 'Web & Full-Stack', icon: 'layers',
+    blurb: 'Full-stack applications across React, Node / Express, Laravel and ASP.NET Core.',
+    projects: pick(['reddit', 'asuums', 'courses']),
+  },
+  {
+    id: 'ai', title: 'AI, ML & Computer Vision', icon: 'brain',
+    blurb: 'From real-time EEG classification to edge detection built from scratch.',
+    projects: pick(['bci', 'canny', 'rating', 'mushroom', 'inference']),
+  },
+  {
+    id: 'hardware', title: 'Embedded & Hardware', icon: 'cpu',
+    blurb: 'Chiplet hardware IP, real-time firmware and interrupt-driven systems.',
+    projects: pick(['twin', 'freertos', 'parking']),
+  },
+  {
+    id: 'desktop', title: 'Desktop & Software Engineering', icon: 'window',
+    blurb: 'Desktop apps, software testing and algorithms in C# and Java.',
+    projects: pick(['store', 'hr', 'automata']),
+  },
+];
