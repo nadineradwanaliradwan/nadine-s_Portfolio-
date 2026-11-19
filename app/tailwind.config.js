@@ -17,8 +17,8 @@ export default {
         tagText: '#CCCCCC',
         input: '#333333',
         ghost: '#E5E5E5',
-        accent: '#E8A33D', // the only colour on the site: in-progress badges + primary CTA
-        accentHover: '#F0B556',
+        accent: '#A3B8CC', // the only colour on the site (steel blue): in-progress badges + primary CTA. Alternatives: sage #A9BBA2, stone #D4CCBF
+        accentHover: '#B7C9DA',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

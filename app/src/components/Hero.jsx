@@ -51,6 +51,7 @@ function CodeBackdrop() {
 /* ---------- Portrait card ---------- */
 function Portrait({ rotateY, small }) {
   const reduce = useReducedMotion();
+  const [colour, setColour] = useState(false); // tap-to-toggle for touch screens (no hover)
   return (
     <div style={{ perspective: 1000 }}>
       <motion.div style={{ rotateY, transformStyle: 'preserve-3d' }}>
@@ -66,7 +67,8 @@ function Portrait({ rotateY, small }) {
               src={portrait}
               alt="Portrait of Nadine Radwan"
               draggable={false}
-              className="h-full w-full object-cover mix-blend-multiply brightness-110 contrast-125 grayscale transition-transform duration-700 group-hover:scale-[1.04]"
+              onClick={() => setColour((c) => !c)}
+              className={`h-full w-full cursor-pointer object-cover transition-[filter,transform] duration-700 ease-out group-hover:scale-[1.04] group-hover:contrast-100 group-hover:grayscale-0 ${colour ? 'contrast-100 grayscale-0' : 'contrast-[1.15] grayscale'}`}
             />
           </div>
           <div className="absolute inset-0 grid place-items-center rounded-[12px] border border-line bg-card [backface-visibility:hidden] [transform:rotateY(180deg)]">
