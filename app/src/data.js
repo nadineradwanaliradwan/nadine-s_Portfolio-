@@ -132,7 +132,7 @@ export const experience = [
     date: '2026 — Present',
     role: 'Siemens Graduation Project',
     org: 'Siemens EDA · Ain Shams University',
-    summary: 'Digital twin framework for validating multi-modal sensor fusion systems before silicon, advised by Prof. Watheq Elkharashi.',
+    summary: 'UCIe-compliant hardware IP that carries AXI transactions between chiplets over a die-to-die link, integrated and validated in Siemens’ chiplet verification environment with automotive co-simulation. Supervised by Prof. Watheq Elkharashi and Dr. Mohamed AbdElSalam (Siemens EDA).',
   },
   {
     date: '3 – 26 Aug 2026',
@@ -222,10 +222,15 @@ export const moreProjects = [
     area: 'Embedded & Real-Time Systems',
     items: [
       {
-        id: 'twin', title: 'Digital Twin for Pre-Silicon Validation', category: 'Graduation project',
-        summary: 'Digital twin framework for validating multi-modal sensor fusion systems before silicon.',
-        role: 'Graduation project with Siemens EDA · advised by Prof. Elkharashi · in progress',
-        stack: ['Sensor Fusion', 'Simulation'],
+        id: 'twin', title: 'UCIe Chiplet Hardware IP & Digital Twin', category: 'Graduation project',
+        summary: 'Design and implementation of a UCIe-compliant hardware IP for chiplet-based digital twin integration — a Siemens EDA × Ain Shams graduation project.',
+        role: 'Supervised by Prof. Watheq Elkharashi (Ain Shams) and Dr. Mohamed AbdElSalam (Siemens EDA) · 2026–2027, in progress',
+        highlights: [
+          'Group A — RTL design: UCIe protocol adapter translating AXI transactions into UCIe packets, plus a die-to-die adapter for framing and flow control',
+          'Group B — integration & validation of the chiplet DUT in Siemens Innexis Developer Pro Hybrid and Innexis VSI, with automotive-scenario and EGO-vehicle co-simulation',
+          'Targets bandwidth utilisation, latency and protocol overhead across dies',
+        ],
+        stack: ['UCIe', 'AXI', 'RTL', 'Chiplets', 'Siemens Innexis'],
         links: [],
       },
       {
